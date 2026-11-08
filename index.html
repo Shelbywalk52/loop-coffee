@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOOP Coffee — Платформа кофейного сообщества</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-600 flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-amber-900/30">L</div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-wide text-white">LOOP Coffee</h1>
+                    <p class="text-xs text-amber-500 font-medium">Экосистема спешелти рынка</p>
+                </div>
+            </div>
+            <nav class="hidden md:flex space-x-1">
+                <button onclick="switchTab('catalog')" id="btn-catalog" class="px-4 py-2 rounded-lg text-sm font-medium transition bg-amber-600/20 text-amber-400">Витрина</button>
+                <button onclick="switchTab('admin')" id="btn-admin" class="px-4 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white">Суперпанель</button>
+                <button onclick="switchTab('auctions')" id="btn-auctions" class="px-4 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white">Аукционы</button>
+                <button onclick="switchTab('ads')" id="btn-ads" class="px-4 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white">Реклама</button>
+                <button onclick="switchTab('collab')" id="btn-collab" class="px-4 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white">Коллаборации</button>
+            </nav>
+            <div class="flex items-center space-x-3">
+                <button onclick="openCart()" class="relative bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-medium transition flex items-center space-x-2 border border-slate-700">
+                    <span>🛒 Корзина</span>
+                    <span id="cart-badge" class="bg-amber-600 text-white text-xs px-2 py-0.5 rounded-full">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden flex overflow-x-auto bg-slate-900 border-b border-slate-800 px-2 py-2 space-x-1">
+        <button onclick="switchTab('catalog')" id="m-btn-catalog" class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap bg-amber-600/20 text-amber-400">Витрина</button>
+        <button onclick="switchTab('admin')" id="m-btn-admin" class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap text-slate-400">Суперпанель</button>
+        <button onclick="switchTab('auctions')" id="m-btn-auctions" class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap text-slate-400">Аукционы</button>
+        <button onclick="switchTab('ads')" id="m-btn-ads" class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap text-slate-400">Реклама</button>
+        <button onclick="switchTab('collab')" id="m-btn-collab" class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap text-slate-400">Коллаборации</button>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
+
+        <!-- CATALOG TAB -->
+        <div id="tab-catalog" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 p-6 rounded-2xl border border-slate-800">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Каталог зерна и расходников</h2>
+                    <p class="text-slate-400 text-sm">Свежая обжарка от ведущих партнеров Астаны и регионов</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <input type="text" id="search-input" oninput="renderCatalog()" placeholder="Поиск по сортам..." class="bg-slate-950 border border-slate-800 px-4 py-2 rounded-xl text-sm focus:outline-none focus:border-amber-500 w-full md:w-64">
+                </div>
+            </div>
+            <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Products injected via JS -->
+            </div>
+        </div>
+
+        <!-- ADMIN TAB (SUPERPANEL) -->
+        <div id="tab-admin" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Add Product Form -->
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <h3 class="text-lg font-bold text-white">➕ Добавить товар</h3>
+                    <form onsubmit="addProduct(event)" class="space-y-4">
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">Название товара</label>
+                            <input type="text" id="p-name" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-sm focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">Категория</label>
+                            <select id="p-category" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-sm focus:outline-none focus:border-amber-500">
+                                <option value="Зерно">Зерно</option>
+                                <option value="Сиропы">Сиропы</option>
+                                <option value="Оборудование">Оборудование</option>
+                                <option value="Химия">Химия</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">Цена (₸)</label>
+                            <input type="number" id="p-price" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-sm focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">Продавец / Поставщик</label>
+                            <input type="text" id="p-seller" placeholder="Local Coffee" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-sm focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">Описание / Дескрипторы</label>
+                            <textarea id="p-desc" rows="2" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-sm focus:outline-none focus:border-amber-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-medium py-2.5 rounded-xl transition">Опубликовать</button>
+                    </form>
+                </div>
+
+                <!-- Products Management & Commission Setup -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
+                        <h3 class="text-lg font-bold text-white">⚙️ Управление комиссиями продавцов</h3>
+                        <p class="text-xs text-slate-400">Устанавливайте индивидуальный процент удержания для каждого поставщика.</p>
+                        <div id="sellers-list" class="space-y-3">
+                            <!-- Sellers list injected via JS -->
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 p-6 rounded-2xl border
